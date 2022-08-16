@@ -1,36 +1,52 @@
-// declaration
-const counter = document.getElementById('counter');
-const increment = document.getElementById('increment');
-const decrement = document.getElementById('decrement');
+// addding listeners
+const counterElemet = document.getElementById('counter');
+const incrementCounterElement = document.getElementById('increment');
+const decrementCounterElement = document.getElementById('decrement');
 
-const counter2 = document.getElementById('counter2');
-const increment2 = document.getElementById('increment2');
-const decrement2 = document.getElementById('decrement2');
+// declaring initialState
+const initialState = {
+  value: 0,
+};
 
-// declaring intialstate
-let count = 0;
-let count2 = 0;
+//  create reducer functions
+const counterReducer = (state = initialState, action) => {
+  if (action.type === 'increment') {
+    return {
+      ...state,
+      value: state.value + 1,
+    };
+  } else if (action.type === 'decrement') {
+    return {
+      ...state,
+      value: state.value - 1,
+    };
+  } else {
+    return state;
+  }
+};
 
-// incresing counter value
-increment.addEventListener('click', () => {
-  count++;
-  counter.innerText = count;
+// creating store by accepting reducer
+const counterStore = Redux.createStore(counterReducer);
+
+const renderStore = () => {
+  const stateCounter = counterStore.getState();
+  counterElemet.innerText = stateCounter.value;
+};
+
+// updating ui initially
+renderStore();
+
+//  subscribing store
+counterStore.subscribe(renderStore);
+
+incrementCounterElement.addEventListener('click', () => {
+  counterStore.dispatch({
+    type: 'increment',
+  });
 });
 
-// decresing counter value
-decrement.addEventListener('click', () => {
-  count--;
-  counter.innerText = count;
-});
-
-// incresing counter value
-increment2.addEventListener('click', () => {
-  count2++;
-  counter2.innerText = count2;
-});
-
-// decresing counter value
-decrement2.addEventListener('click', () => {
-  count2--;
-  counter2.innerText = count2;
+decrementCounterElement.addEventListener('click', () => {
+  counterStore.dispatch({
+    type: 'decrement',
+  });
 });
